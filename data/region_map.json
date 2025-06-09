@@ -1,0 +1,19 @@
+{
+  "USA": "North America",
+  "Canada": "North America",
+  "Mexico": "North America",
+  "China": "East Asia",
+  "Japan": "East Asia",
+  "South Korea": "East Asia",
+  "India": "South Asia",
+  "Pakistan": "South Asia",
+  "Bangladesh": "South Asia",
+  "Nigeria": "Africa",
+  "Kenya": "Africa",
+  "South Africa": "Africa",
+  "Brazil": "South America",
+  "Argentina": "South America",
+  "UK": "Europe",
+  "Germany": "Europe",
+  "France": "Europe"
+}

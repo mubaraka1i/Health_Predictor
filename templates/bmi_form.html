@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Body Fat Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at bottom right, #8e2de2, #4a00e0);
+      color: white;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .form-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 12px;
+      width: 300px;
+    }
+
+    .form-container input,
+    .form-container select,
+    .form-container button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+    }
+
+    .form-container button {
+      background: #4caf50;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .form-container h2 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <div class="form-container">
+    <h2>BMI + Body Fat Calculator</h2>
+    <form action="/calculate" method="POST">
+      <input type="number" name="weight" placeholder="Weight (lbs)" step="0.1" required />
+      <div style="display: flex; gap: 5px;">
+        <input type="number" name="feet" placeholder="Height (ft)" required />
+        <input type="number" name="inches" placeholder="In (in)" required />
+      </div>
+      <input type="number" name="waist" placeholder="Pants Width (Leave Blank If Unknown)" step="0.1" />
+      <input type="number" name="age" placeholder="Age" required />
+      <select name="gender" required>
+        <option value="">Select Gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <select name="muscle" required>
+        <option value="">Muscle Mass Level</option>
+        <option value="low">Low (Sedentary)</option>
+        <option value="average">Average (Active Lifestyle)</option>
+        <option value="high">High (Weight Trained)</option>
+        <option value="elite">Elite (Pro Athlete/Bodybuilder)</option>
+      </select>
+      <input type="text" name="region" id="regionInput" placeholder="Region (click or type)" required />
+      <button type="submit">Calculate</button>
+    </form>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map', {
+      zoomControl: false,
+      attributionControl: false,
+      worldCopyJump: true,
+      maxBoundsViscosity: 0.0
+    }).setView([37, -95], 2)
+
+
+
+    map.setMaxBounds([
+  [-160, -50],
+  [160, 50]
+]);
+
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    fetch('/static/world.geojson')
+      .then(res => res.json())
+      .then(data => {
+        const geoLayer = L.geoJSON(data, {
+          style: {
+            color: "#333",
+            weight: 1,
+            fillColor: "#d4b3ff",
+            fillOpacity: 0.5
+          },
+          onEachFeature: (feature, layer) => {
+            const name = feature.properties.ADMIN || feature.properties.name || "Unknown";
+            layer.on({
+              click: () => {
+                document.getElementById('regionInput').value = name;
+                layer.setStyle({ color: "yellow", weight: 2 });
+              },
+              mouseover: () => layer.setStyle({ fillOpacity: 0.7 }),
+              mouseout: () => geoLayer.resetStyle(layer)
+            });
+            layer.bindTooltip(name, { permanent: false });
+          }
+        }).addTo(map);
+      });
+  </script>
+
+</body>
+</html>
+
