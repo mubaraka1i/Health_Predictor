@@ -1,4 +1,4 @@
-BMI & Body Fat Calculator
+Health Predictor
 
 This project is a full-stack web application that calculates BMI and estimates body fat percentage using multiple variables to improve accuracy beyond traditional BMI formulas. The calculator takes into account gender, waist size, hip size, region (socioeconomic), height/weight data, and muscle mass status to generate customized results. In addition, it uses regression models trained on previous data to predict estimated pants width based on the user’s measurements.
 
